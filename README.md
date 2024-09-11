@@ -17,29 +17,35 @@ type to fit the data.
 6. 
 ### PROGRAM:
 ```
-import numpy as np
 import pandas as pd
-import statsmodels.api as sm
+import numpy as np
 import matplotlib.pyplot as plt
 
-df= [3, 16, 156, 47, 246, 176, 233, 140, 130, 101, 166, 201, 200, 116, 118, 247, 209, 52, 153, 232, 128, 27, 192, 168, 208, 187, 228, 86, 30, 151, 18, 254, 76, 112, 67, 244, 179, 150, 89, 49, 83, 147, 90, 33, 6, 158, 80, 35, 186, 127]
+df = pd.read_csv('/content/yahoo_stock.csv')
+data = df['Volume'].values
 
-data_mean = np.mean(df)
-data_var = np.var(df)
-normalized_data = (df - data_mean) / np.sqrt(data_var)
-acf_result = np.correlate(normalized_data, normalized_data, mode='full')
-acf_result = acf_result[len(acf_result)//2:]
+mean = np.mean(data)
+variance = np.var(data)
 
-plt.figure(figsize=(10, 5))
-plt.stem(acf_result[:36], use_line_collection=True)
+normalized_data = (data - mean) / np.sqrt(variance)
+
+lag = 35
+n = len(normalized_data)
+autocorr = np.correlate(normalized_data, normalized_data, mode='full')
+autocorr = autocorr[n-1:] / (variance * n)
+autocorr_results = autocorr[:lag]
+
+plt.figure(figsize=(10, 6))
+plt.stem(range(lag), autocorr_results, use_line_collection=True)
+plt.title('Autocorrelation Function (ACF)')
 plt.xlabel('Lag')
 plt.ylabel('Autocorrelation')
-plt.title('Autocorrelation Function (ACF)')
+plt.grid(True)
 plt.show()
 ```
 
 ### OUTPUT:
-![image](https://github.com/user-attachments/assets/ac34bc40-ac42-4b40-9136-db97ca9ddeb3)
+![image](https://github.com/user-attachments/assets/67d4c4bb-b7e8-40f7-b68f-4650a45a6a06)
 
 ### RESULT:
 Thus , successfully implemented the auto correlation function in python.
